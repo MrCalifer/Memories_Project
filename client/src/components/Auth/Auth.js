@@ -8,13 +8,13 @@ import {
   Typography,
   Container,
 } from "@material-ui/core";
-// import { useHistory } from "react-router-dom";
-// import { GoogleLogin } from "react-google-login";
+import { useHistory } from "react-router-dom";
+import { GoogleLogin } from "react-google-login";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
-// import Icon from "./icon";
+import Icon from "./icon";
 // import { signin, signup } from "../../actions/auth";
-// import { AUTH } from "../../constants/actionTypes";
+import { AUTH, GOOGLE_CLIENT_ID } from "../../constants/actionTypes";
 import useStyles from "./styles";
 import Input from "./Input";
 
@@ -22,6 +22,8 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignUp] = useState(false);
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -34,6 +36,22 @@ const Auth = () => {
   const handleSubmit = () => {};
 
   const handleChange = () => {};
+
+  const googleSuccess = async (res) => {
+    console.log("Google sign-in successfull.");
+    const result = res?.profileObj;
+    const token = res?.tokenId;
+
+    try {
+      dispatch({ type: AUTH, data: { result, token } });
+      history.push('/')
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const googleError = (error) => {
+    console.log(`Google sign-in failed. due to ${error}`);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -94,8 +112,8 @@ const Auth = () => {
           >
             {isSignup ? "Sign Up" : "Sign In"}
           </Button>
-          {/* <GoogleLogin
-            clientId="564033717568-e5p23rhvcs4i6kffgsbci1d64r8hp6fn.apps.googleusercontent.com"
+          <GoogleLogin
+            clientId= {GOOGLE_CLIENT_ID}
             render={(renderProps) => (
               <Button
                 className={classes.googleButton}
@@ -106,14 +124,14 @@ const Auth = () => {
                 startIcon={<Icon />}
                 variant="contained"
               >
-                Google Sign In
+                Sign In Using Google
               </Button>
             )}
             onSuccess={googleSuccess}
             onFailure={googleError}
             cookiePolicy="single_host_origin"
-          />*/}
-          <Grid container justify="flex-end">
+          />
+          <Grid container justifyContent="flex-end">
             <Grid item>
               <Button onClick={switchMode}>
                 {isSignup

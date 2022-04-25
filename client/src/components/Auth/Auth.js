@@ -17,10 +17,20 @@ import Icon from "./icon";
 import { AUTH, GOOGLE_CLIENT_ID } from "../../constants/actionTypes";
 import useStyles from "./styles";
 import Input from "./Input";
+import { signin, signup } from "../../actions/auth";
+
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignUp] = useState(false);
+  const [formData, setFormData] = useState(initialState);
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -29,13 +39,23 @@ const Auth = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
 
   const switchMode = () => {
+    setFormData(initialState);
     setIsSignUp((prevIsSignUp) => !prevIsSignUp);
-    handleShowPassword(false);
+    setShowPassword(false);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (isSignup) {
+      dispatch(signup(formData, history));
+    } else {
+      dispatch(signin(formData, history));
+    }
+  };
 
-  const handleChange = () => {};
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
 
   const googleSuccess = async (res) => {
     console.log("Google sign-in successfull.");
@@ -44,7 +64,7 @@ const Auth = () => {
 
     try {
       dispatch({ type: AUTH, data: { result, token } });
-      history.push('/')
+      history.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -113,7 +133,7 @@ const Auth = () => {
             {isSignup ? "Sign Up" : "Sign In"}
           </Button>
           <GoogleLogin
-            clientId= {GOOGLE_CLIENT_ID}
+            clientId={GOOGLE_CLIENT_ID}
             render={(renderProps) => (
               <Button
                 className={classes.googleButton}

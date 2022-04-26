@@ -77,7 +77,6 @@ const Post = ({ post, setCurrentId }) => {
           </Button>
         </div>
       )}
-      ;
       <div className={classes.details}>
         <Typography variant="body2" color="textSecondary">
           {post.tags ? post.tags.map((tag) => `#${tag} `) : null}

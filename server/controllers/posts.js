@@ -13,7 +13,7 @@ export const getPosts = async (req, res) => {
       .limit(LIMIT)
       .skip(startIndex);
 
-    console.log(posts);
+    // console.log(posts);
 
     res.status(200).json({
       data: posts,

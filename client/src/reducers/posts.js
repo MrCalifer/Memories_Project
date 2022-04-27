@@ -22,7 +22,7 @@ export default (state = { isLoading: true, posts: [] }, action) => {
         numberOfPages: action.payload.numberOfPages,
       };
     case CREATE_POST:
-      return [...state, action.payload];
+      return { ...state, posts: [...state.posts, action.payload] };
     case UPDATE_POST:
       return {
         ...state,

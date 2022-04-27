@@ -4,18 +4,23 @@ import { TextField, Button, Typography, Paper } from "@material-ui/core";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
+import { useHistory } from "react-router-dom";
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
-    creator: "",
+    // creator: "",
     title: "",
     message: "",
     tags: "",
     selectedFile: "",
   });
-  const post = useSelector((state) => currentId ? state.posts.find((post) => post._id === currentId) : null);
+  const post = useSelector((state) =>
+    currentId ? state.posts.posts.find((post) => post._id === currentId) : null
+  );
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const user = JSON.parse(localStorage.getItem("Profile"));
 
   useEffect(() => {
     if (post) {
@@ -26,17 +31,30 @@ const Form = ({ currentId, setCurrentId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentId) {
-      dispatch(updatePost(currentId, postData));
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
+      clear();
     } else {
-      dispatch(createPost(postData));
+      dispatch(createPost({ ...postData, name: user?.result?.name }, history));
+      clear();
     }
-    clear();
   };
+
+  if (!user?.result?.name) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h6" align="center">
+          Please Sign-In to create your own memories and see others memories
+        </Typography>
+      </Paper>
+    );
+  }
 
   const clear = () => {
     setCurrentId(null);
     setPostData({
-      creator: "",
+      // creator: "",
       title: "",
       message: "",
       tags: "",
@@ -45,7 +63,7 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         autoComplete="off"
         noValidate
@@ -55,7 +73,7 @@ const Form = ({ currentId, setCurrentId }) => {
         <Typography varient="h6">
           {currentId ? `Editing` : `Creating`} a Memory
         </Typography>
-        <TextField
+        {/* <TextField
           name="creator"
           variant="outlined"
           label="Creator"
@@ -64,7 +82,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, creator: e.target.value })
           }
-        />
+        /> */}
         <TextField
           name="title"
           variant="outlined"
@@ -89,7 +107,9 @@ const Form = ({ currentId, setCurrentId }) => {
           label="Tags (use , to seperate tags)"
           fullWidth
           value={postData.tags}
-          onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })}
+          onChange={(e) =>
+            setPostData({ ...postData, tags: e.target.value.split(",") })
+          }
         />
         <div className={classes.fileInput}>
           <FileBase

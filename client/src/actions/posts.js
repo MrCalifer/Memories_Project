@@ -37,6 +37,8 @@ export const getPostByID = (id) => async (dispatch) => {
 export const getPostBySearch = (searchQuery) => async (dispatch) => {
   try {
     dispatch({type : START_LOADING});
+    console.log("Actions")
+    console.log(searchQuery);
     const { data: { data } } = await api.fetchPostBySearch(searchQuery);
     dispatch({ type: FETCH_POST_BY_SEARCH, payload: data });
     dispatch({type : STOP_LOADING});

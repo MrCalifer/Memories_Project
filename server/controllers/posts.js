@@ -13,21 +13,13 @@ export const getPosts = async (req, res) => {
       .limit(LIMIT)
       .skip(startIndex);
 
+    console.log(posts);
+
     res.status(200).json({
       data: posts,
       currentPage: Number(page),
       numberOfPages: Math.ceil(total / LIMIT),
     });
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-
-export const getPostByID = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const post = await PostMessage.findById(id);
-    res.status(200).json(post);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -43,10 +35,9 @@ export const getPostsBySearch = async (req, res) => {
     });
     res.status(200).json({ data: post });
   } catch (error) {
-    res.status(404).json({ message: error });
+    res.status(404).json({ message: error.message });
   }
 };
-
 
 export const createPosts = async (req, res) => {
   const post = req.body;
@@ -114,4 +105,16 @@ export const likePost = async (req, res) => {
   });
 
   res.status(201).json(updatedPost);
+};
+
+export const getPostByID = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await PostMessage.findById(id);
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };

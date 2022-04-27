@@ -22,11 +22,11 @@ const PostDetails = () => {
     dispatch(getPostByID(id));
   }, [id]);
 
-  // useEffect(() => {
-  //   if (post) {
-  //     dispatch(getPostBySearch({ search: 'none', tags: post?.tags.join(',') }));
-  //   }
-  // }, [post]);
+  useEffect(() => {
+    if (post) {
+      dispatch(getPostBySearch({ search: 'none', tags: post?.tags.join(',') }));
+    }
+  }, [post]);
 
   if (!post) return null;
 

@@ -6,6 +6,7 @@ import {
   FETCH_POST_BY_SEARCH,
   START_LOADING,
   STOP_LOADING,
+  FETCH_POST_BY_ID,
 } from "../constants/actionTypes";
 export default (state = { isLoading: true, posts: [] }, action) => {
   switch (action.type) {
@@ -36,6 +37,8 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       };
     case FETCH_POST_BY_SEARCH:
       return { ...state, posts: action.payload };
+    case FETCH_POST_BY_ID:
+      return { ...state, post: action.payload };
     default:
       return state;
   }

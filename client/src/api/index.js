@@ -18,6 +18,8 @@ export const updatePost = (id, updatedPost) =>
   API.patch(`posts/updatePost/${id}`, updatedPost);
 export const deletePost = (id) => API.delete(`posts/deletePost/${id}`);
 export const likePost = (id) => API.patch(`posts/updatePost/${id}/likePost`);
+export const comment = (value, id) =>
+  API.post(`posts/${id}/commentPost`, { value });
 export const fetchPostBySearch = (searchQuery) =>
   API.get(
     `posts/search?searchQuery=${searchQuery.search || "none"}&tags=${

@@ -5,6 +5,7 @@ export const DELETE_POST = 'DELETE_POST';
 export const FETCH_ALL_POST = 'FETCH_ALL_POST';
 export const FETCH_POST_BY_ID = 'FETCH_POST_BY_ID';
 export const FETCH_POST_BY_SEARCH = 'FETCH_POST_BY_SEARCH';
+export const COMMENT = "COMMENT";
 
 //For Authentication
 export const AUTH = 'AUTH';

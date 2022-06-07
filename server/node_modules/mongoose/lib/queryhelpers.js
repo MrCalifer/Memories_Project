@@ -226,7 +226,9 @@ exports.applyPaths = function applyPaths(fields, schema) {
     const addedPaths = [];
     schema.eachPath(function(path, type) {
       if (prefix) path = prefix + '.' + path;
-
+      if (type.$isSchemaMap || path.endsWith('.$*')) {
+        return;
+      }
       let addedPath = analyzePath(path, type);
       // arrays
       if (addedPath == null && !Array.isArray(type) && type.$isMongooseArray && !type.$isMongooseDocumentArray) {
@@ -248,7 +250,6 @@ exports.applyPaths = function applyPaths(fields, schema) {
         }
       }
     });
-
     stack.pop();
     return addedPaths;
   }
@@ -261,7 +262,17 @@ exports.applyPaths = function applyPaths(fields, schema) {
       delete fields[plusPath];
     }
 
-    if (typeof type.selected !== 'boolean') return;
+    if (typeof type.selected !== 'boolean') {
+      return;
+    }
+
+    // If set to 0, we're explicitly excluding the discriminator key. Can't do this for all fields,
+    // because we have tests that assert that using `-path` to exclude schema-level `select: true`
+    // fields counts as an exclusive projection. See gh-11546
+    if (exclude && type.selected && path === schema.options.discriminatorKey && fields[path] != null && !fields[path]) {
+      delete fields[path];
+      return;
+    }
 
     if (hasPlusPath) {
       // forced inclusion
